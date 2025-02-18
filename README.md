@@ -15,6 +15,7 @@ This uses a simple shell script where you provide the number of seconds it needs
 3. Give permission to execute the shell script using `chmod +x script.sh` for **MAC or Linux** for **Windows** using the Powershell `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 4. You need to have you APEX script that does the DML in the `./apex` folder. Please refer to `test.apex` as sample.
 5. Update the Sheel variables with your prefrences
+
    1. Num of Runs
    2. Sleep Timer
    3. Org Alias
