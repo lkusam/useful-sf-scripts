@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Send_Verification_Email__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Email the new user a link to verify their email address.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Email the new user a link to verify their email address.</inlineHelpText>
+    <label>Send Verification Email</label>
+    <type>Checkbox</type>
+</CustomField>

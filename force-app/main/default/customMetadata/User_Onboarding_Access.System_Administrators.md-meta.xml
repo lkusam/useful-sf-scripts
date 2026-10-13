@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>System Administrators</label>
+    <protected>false</protected>
+    <values>
+        <field>Access_Type__c</field>
+        <value xsi:type="xsd:string">Profile</value>
+    </values>
+    <values>
+        <field>Access_Value__c</field>
+        <value xsi:type="xsd:string">System Administrator</value>
+    </values>
+    <values>
+        <field>Can_Create__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

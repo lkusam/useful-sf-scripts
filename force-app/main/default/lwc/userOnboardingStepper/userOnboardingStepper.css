@@ -1,0 +1,198 @@
+:host {
+    display: block;
+    --_brand: var(--slds-g-color-brand-base-50, #0176d3);
+    --_brand-2: #7f56d9;
+    --_grad: linear-gradient(135deg, var(--_brand) 0%, var(--_brand-2) 100%);
+    --_surface: var(--slds-g-color-surface-container-1, #ffffff);
+    --_border: var(--slds-g-color-border-1, #c9c9c9);
+    --_text: var(--slds-g-color-on-surface-3, #181818);
+    --_muted: var(--slds-g-color-on-surface-1, #5c5c5c);
+    --_ring: rgba(1, 118, 211, 0.22);
+    --_dot-size: 1.75rem;
+}
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+    :host {
+        --_ring: color-mix(in srgb, var(--_brand) 24%, transparent);
+    }
+}
+
+.steps {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.step {
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    gap: var(--slds-g-spacing-2, 0.375rem);
+}
+
+.dot {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: var(--_dot-size);
+    height: var(--_dot-size);
+    padding: 0;
+    border: 2px solid var(--_border);
+    border-radius: 50%;
+    background: var(--_surface);
+    color: var(--_muted);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: default;
+    transition:
+        background 0.35s ease,
+        border-color 0.35s ease,
+        color 0.35s ease,
+        box-shadow 0.35s ease,
+        transform 0.2s ease;
+}
+
+.dot:disabled {
+    opacity: 1;
+}
+
+.dot-check {
+    width: 0.95rem;
+    height: 0.95rem;
+}
+
+.dot-check path {
+    stroke-dasharray: 24;
+    animation: draw 0.4s ease-out backwards;
+}
+
+.step.is-done .dot {
+    border-color: transparent;
+    background: var(--_grad);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.step.is-done .dot:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 4px var(--_ring);
+}
+
+.step.is-done .dot:active {
+    transform: scale(0.94);
+}
+
+.step.is-current .dot {
+    border-color: var(--_brand);
+    color: var(--_brand);
+    box-shadow: 0 0 0 4px var(--_ring);
+}
+
+.step.is-current .dot::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--_brand);
+    opacity: 0;
+    animation: pulse 2s ease-out infinite;
+}
+
+.dot:focus-visible {
+    outline: 2px solid var(--_brand);
+    outline-offset: 3px;
+}
+
+.step-label {
+    max-width: 100%;
+    overflow: hidden;
+    padding: 0 2px;
+    color: var(--_muted);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.step.is-current .step-label {
+    color: var(--_text);
+    font-weight: 700;
+}
+
+.step.is-done .step-label {
+    color: var(--_text);
+}
+
+.line {
+    position: absolute;
+    top: calc(var(--_dot-size) / 2 - 1px);
+    right: calc(-50% + var(--_dot-size) / 2 + 0.3rem);
+    left: calc(50% + var(--_dot-size) / 2 + 0.3rem);
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--_border);
+    opacity: 0.7;
+}
+
+.line-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--_grad);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.step.is-done .line {
+    opacity: 1;
+}
+
+.step.is-done .line-fill {
+    transform: scaleX(1);
+}
+
+@keyframes draw {
+    from {
+        stroke-dashoffset: 24;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.7);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dot,
+    .step-label,
+    .line-fill {
+        transition: none;
+    }
+
+    .dot-check path,
+    .step.is-current .dot::after {
+        animation: none;
+    }
+
+    .step.is-current .dot::after {
+        display: none;
+    }
+}

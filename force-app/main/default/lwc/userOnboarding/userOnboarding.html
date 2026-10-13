@@ -1,0 +1,664 @@
+<template>
+    <div class="onb">
+        <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">{liveMessage}</div>
+
+        <!-- Hero -->
+        <header class="hero">
+            <span class="hero-orb hero-orb-a" aria-hidden="true"></span>
+            <span class="hero-orb hero-orb-b" aria-hidden="true"></span>
+            <span class="hero-icon" aria-hidden="true">
+                <lightning-icon icon-name="utility:adduser" alternative-text="" size="small" variant="inverse"></lightning-icon>
+            </span>
+            <div class="hero-text">
+                <h1 class="hero-title">User Onboarding</h1>
+                <p class="hero-sub">Clone an existing user into a ready-to-go account.</p>
+            </div>
+        </header>
+
+        <!-- Loading access -->
+        <template lwc:if={isLoadingAccess}>
+            <div class="body" aria-busy="true">
+                <div class="card">
+                    <div class="skeleton sk-line sk-w-60"></div>
+                    <div class="skeleton sk-line sk-w-90"></div>
+                    <div class="skeleton sk-block"></div>
+                    <div class="skeleton sk-block"></div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Access check failed -->
+        <template lwc:elseif={accessError}>
+            <div class="body">
+                <div class="card state-card" role="alert">
+                    <span class="state-icon state-icon-error" aria-hidden="true">
+                        <lightning-icon icon-name="utility:error" alternative-text="" size="small"></lightning-icon>
+                    </span>
+                    <h2 class="state-title">We could not check your access</h2>
+                    <p class="state-text">{accessError}</p>
+                    <button type="button" class="btn btn-secondary" onclick={handleRetryAccess}>Try again</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- No access -->
+        <template lwc:elseif={isNoAccess}>
+            <div class="body">
+                <div class="card state-card">
+                    <span class="state-icon state-icon-lock" aria-hidden="true">
+                        <lightning-icon icon-name="utility:lock" alternative-text="" size="small"></lightning-icon>
+                    </span>
+                    <h2 class="state-title">This tool is not available to you</h2>
+                    <p class="state-text">
+                        Your user has not been granted access to User Onboarding. Ask a Salesforce administrator to add you to the User
+                        Onboarding Access rules if you need it.
+                    </p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Has an access rule but lacks the platform permissions the tool needs -->
+        <template lwc:elseif={isMissingPermissions}>
+            <div class="body">
+                <div class="card state-card">
+                    <span class="state-icon state-icon-lock" aria-hidden="true">
+                        <lightning-icon icon-name="utility:lock" alternative-text="" size="small"></lightning-icon>
+                    </span>
+                    <h2 class="state-title">A few permissions are missing</h2>
+                    <p class="state-text">
+                        You're allowed to use User Onboarding, but your user also needs these Salesforce permissions to create users. Ask a
+                        Salesforce administrator to grant them:
+                    </p>
+                    <ul class="chip-list">
+                        <template for:each={missingPermissionItems} for:item="permission">
+                            <li key={permission.key} class="chip">{permission.label}</li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </template>
+
+        <!-- Success -->
+        <template lwc:elseif={isSuccess}>
+            <div class="body">
+                <section class="card success-card">
+                    <div class="success-visual" aria-hidden="true">
+                        <span class="confetti c1"></span>
+                        <span class="confetti c2"></span>
+                        <span class="confetti c3"></span>
+                        <span class="confetti c4"></span>
+                        <span class="confetti c5"></span>
+                        <span class="confetti c6"></span>
+                        <span class="confetti c7"></span>
+                        <span class="confetti c8"></span>
+                        <svg class="success-check" viewBox="0 0 52 52" focusable="false">
+                            <circle class="check-circle" cx="26" cy="26" r="24" fill="none"></circle>
+                            <path class="check-mark" fill="none" d="M14 27 l8 8 l16 -17"></path>
+                        </svg>
+                    </div>
+                    <h2 class="panel-title success-title" tabindex="-1" data-focus-target>{successTitle}</h2>
+                    <p class="success-sub">The account was created with this username</p>
+                    <code class="username-pill">{result.username}</code>
+                    <p class="success-manager">{resultManagerLine}</p>
+
+                    <ul class="stat-grid">
+                        <template for:each={resultStats} for:item="stat">
+                            <li key={stat.key} class="stat">
+                                <span class="stat-value">{stat.value}</span>
+                                <span class="stat-label">{stat.label}</span>
+                            </li>
+                        </template>
+                    </ul>
+
+                    <div lwc:if={hasWarnings} class="notice notice-warning" role="alert">
+                        <span class="notice-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:warning" alternative-text="" size="x-small"></lightning-icon>
+                        </span>
+                        <div class="notice-body">
+                            <p class="notice-title">{warningTitle}</p>
+                            <ul class="warning-list">
+                                <template for:each={warningItems} for:item="warning">
+                                    <li key={warning.key}>{warning.text}</li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p class="muted-note">{successEmailNote}</p>
+
+                    <div class="success-actions">
+                        <button type="button" class="btn btn-primary" onclick={handleOpenRecord}>Open user record</button>
+                        <button type="button" class="btn btn-secondary" onclick={handleReset}>Onboard another</button>
+                    </div>
+                </section>
+            </div>
+        </template>
+
+        <!-- Wizard -->
+        <template lwc:else>
+            <div class="stepper-wrap">
+                <c-user-onboarding-stepper steps={steps} current-step={step} onstepselect={handleStepSelect}></c-user-onboarding-stepper>
+            </div>
+
+            <div class="body">
+                <!-- Step 1: clone from -->
+                <template lwc:if={isStep1}>
+                    <section class={panelClass}>
+                        <h2 class="panel-title" tabindex="-1" data-focus-target>Who should the new user be like?</h2>
+                        <p class="panel-sub">Pick an active user. Their profile, role, permissions, licenses and groups are copied to the new account.</p>
+
+
+                        <!-- Picked user's licence type is used up: this card takes over step 1 -->
+                        <template lwc:if={isOutOfLicences}>
+                            <div class="card state-card takeover" role="alert">
+                                <span class="state-icon state-icon-error" aria-hidden="true">
+                                    <lightning-icon icon-name="utility:error" alternative-text="" size="small"></lightning-icon>
+                                </span>
+                                <h3 class="state-title">No {cloneDetails.licenceName} licences left</h3>
+                                <p class="state-text">
+                                    {cloneUser.name} uses a {cloneDetails.licenceName} licence, and every one is already in use, so a new user like them
+                                    can't be created right now.
+                                </p>
+                                <ul class="takeover-steps">
+                                    <li>Pick someone on a different licence type, or</li>
+                                    <li>Deactivate a user who no longer needs their licence, or</li>
+                                    <li>Buy more licences.</li>
+                                </ul>
+                                <button type="button" class="btn btn-primary" onclick={handleChangeUser}>Pick a different user</button>
+                            </div>
+                        </template>
+                        <template lwc:elseif={hasSelectedUser}>
+                            <div class="card clone-card">
+                                <div class="person">
+                                    <span class="avatar-wrap" aria-hidden="true">
+                                        <lightning-avatar
+                                            src={cloneUser.smallPhotoUrl}
+                                            initials={cloneUser.initials}
+                                            fallback-icon-name="standard:user"
+                                            alternative-text=""
+                                            variant="circle"
+                                            size="large"
+                                        ></lightning-avatar>
+                                    </span>
+                                    <div class="person-main">
+                                        <p class="person-name">{cloneUser.name}</p>
+                                        <p class="person-sub">{cloneUser.username}</p>
+                                        <p lwc:if={cloneUser.title} class="person-meta">{cloneUser.title}</p>
+                                    </div>
+                                    <button type="button" class="link-btn" onclick={handleChangeUser}>Change<span class="sr-only"> clone user</span></button>
+                                </div>
+
+
+                                <template lwc:if={isLoadingClone}>
+                                    <div class="clone-loading" aria-busy="true">
+                                        <div class="skeleton sk-line sk-w-90"></div>
+                                        <div class="skeleton sk-line sk-w-60"></div>
+                                        <div class="sk-tiles">
+                                            <div class="skeleton sk-tile"></div>
+                                            <div class="skeleton sk-tile"></div>
+                                            <div class="skeleton sk-tile"></div>
+                                            <div class="skeleton sk-tile"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:elseif={cloneError}>
+                                    <div class="notice notice-error" role="alert">
+                                        <span class="notice-icon" aria-hidden="true">
+                                            <lightning-icon icon-name="utility:error" alternative-text="" size="x-small"></lightning-icon>
+                                        </span>
+                                        <div class="notice-body">
+                                            <p class="notice-title">Could not load this user</p>
+                                            <p class="notice-text">{cloneError}</p>
+                                            <button type="button" class="link-btn" onclick={handleRetryClone}>Try again</button>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:elseif={cloneDetails}>
+                                    <dl class="facts">
+                                        <div class="fact">
+                                            <dt>Profile</dt>
+                                            <dd>{cloneDetails.profileName}</dd>
+                                        </div>
+                                        <div class="fact">
+                                            <dt>Role</dt>
+                                            <dd>{cloneDetails.roleName}</dd>
+                                        </div>
+                                        <div class="fact">
+                                            <dt>Manager</dt>
+                                            <dd>{cloneDetails.managerName}</dd>
+                                        </div>
+                                    </dl>
+                                    <ul class="stat-grid">
+                                        <template for:each={cloneDetails.stats} for:item="stat">
+                                            <li key={stat.key} class="stat">
+                                                <span class="stat-value">{stat.value}</span>
+                                                <span class="stat-label">{stat.label}</span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                    <details lwc:if={cloneDetails.hasSections} class="more">
+                                        <summary>See what will be copied</summary>
+                                        <template for:each={cloneDetails.sections} for:item="section">
+                                            <div key={section.key} class="more-section">
+                                                <p class="more-title">{section.title}</p>
+                                                <ul class="chip-list">
+                                                    <template for:each={section.items} for:item="item">
+                                                        <li key={item.id} class="chip">{item.label}</li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </template>
+                                    </details>
+                                    <div lwc:elseif={cloneDetails.licencesLow} class="notice notice-info" role="status">
+                                        <span class="notice-icon" aria-hidden="true">
+                                            <lightning-icon icon-name="utility:info" alternative-text="" size="x-small"></lightning-icon>
+                                        </span>
+                                        <p class="notice-text">{cloneDetails.licencesLeftText}</p>
+                                    </div>
+                                    <div lwc:if={cloneDetails.hasExhaustedLicences} class="notice notice-warning" role="status">
+                                        <span class="notice-icon" aria-hidden="true">
+                                            <lightning-icon icon-name="utility:warning" alternative-text="" size="x-small"></lightning-icon>
+                                        </span>
+                                        <div class="notice-body">
+                                            <p class="notice-title">Some permission set licences are used up</p>
+                                            <p class="notice-text">
+                                                {cloneDetails.exhaustedLicences}. The user can still be created, but these licences and any
+                                                permission sets that need them won't be assigned.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="card search-card">
+                                <lightning-input
+                                    type="search"
+                                    name="userSearch"
+                                    label="Search for a user to clone"
+                                    variant="label-hidden"
+                                    placeholder="Search by name, username or email"
+                                    value={searchTerm}
+                                    is-loading={isSearching}
+                                    onchange={handleSearchInput}
+                                ></lightning-input>
+
+                                <div class="results" aria-busy={searchBusyValue}>
+                                    <template lwc:if={isSearching}>
+                                        <div class="skeleton-list">
+                                            <div class="skeleton sk-card"></div>
+                                            <div class="skeleton sk-card"></div>
+                                            <div class="skeleton sk-card"></div>
+                                        </div>
+                                    </template>
+                                    <template lwc:elseif={searchError}>
+                                        <div class="notice notice-error" role="alert">
+                                            <span class="notice-icon" aria-hidden="true">
+                                                <lightning-icon icon-name="utility:error" alternative-text="" size="x-small"></lightning-icon>
+                                            </span>
+                                            <div class="notice-body">
+                                                <p class="notice-title">Search failed</p>
+                                                <p class="notice-text">{searchError}</p>
+                                                <button type="button" class="link-btn" onclick={handleRetrySearch}>Try again</button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:elseif={hasResults}>
+                                        <ul class="result-list">
+                                            <template for:each={searchResultItems} for:item="user">
+                                                <li key={user.id}>
+                                                    <button type="button" class="result-card" data-id={user.id} style={user.animStyle} onclick={handleSelectUser}>
+                                                        <span class="avatar-wrap" aria-hidden="true">
+                                                            <lightning-avatar
+                                                                src={user.smallPhotoUrl}
+                                                                initials={user.initials}
+                                                                fallback-icon-name="standard:user"
+                                                                alternative-text=""
+                                                                variant="circle"
+                                                                size="medium"
+                                                            ></lightning-avatar>
+                                                        </span>
+                                                        <span class="result-main">
+                                                            <span class="result-name">{user.name}</span>
+                                                            <span class="result-sub">{user.username}</span>
+                                                            <span lwc:if={user.metaLine} class="result-meta">{user.metaLine}</span>
+                                                        </span>
+                                                        <span class="result-go" aria-hidden="true">
+                                                            <lightning-icon icon-name="utility:chevronright" alternative-text="" size="xx-small"></lightning-icon>
+                                                        </span>
+                                                    </button>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <template lwc:elseif={showNoResults}>
+                                        <div class="empty">
+                                            <span class="empty-icon" aria-hidden="true">
+                                                <lightning-icon icon-name="utility:search" alternative-text="" size="small"></lightning-icon>
+                                            </span>
+                                            <p class="empty-title">No matching users</p>
+                                            <p class="empty-text">Only active standard users appear here. Try a different name or email.</p>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="empty">
+                                            <span class="empty-icon" aria-hidden="true">
+                                                <lightning-icon icon-name="utility:search" alternative-text="" size="small"></lightning-icon>
+                                            </span>
+                                            <p class="empty-title">Start typing to search</p>
+                                            <p class="empty-text">Enter at least 2 characters of a name, username or email.</p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </section>
+                </template>
+
+                <!-- Step 2: new user -->
+                <template lwc:if={isStep2}>
+                    <section class={panelClass}>
+                        <h2 class="panel-title" tabindex="-1" data-focus-target>Tell us about the new user</h2>
+                        <p class="panel-sub">Everything else is copied from {cloneUser.name}.</p>
+
+                        <div class="card">
+                            <div class="form-grid">
+                                <lightning-input
+                                    data-validate
+                                    name="firstName"
+                                    label="First name"
+                                    value={firstName}
+                                    required
+                                    max-length="40"
+                                    autocomplete="off"
+                                    onchange={handleFieldChange}
+                                ></lightning-input>
+                                <lightning-input
+                                    data-validate
+                                    name="lastName"
+                                    label="Last name"
+                                    value={lastName}
+                                    required
+                                    max-length="80"
+                                    autocomplete="off"
+                                    onchange={handleFieldChange}
+                                ></lightning-input>
+                            </div>
+                            <lightning-input
+                                data-validate
+                                type="email"
+                                name="email"
+                                label="Email"
+                                value={email}
+                                required
+                                max-length="128"
+                                autocomplete="off"
+                                message-when-type-mismatch="Enter a valid email address."
+                                onchange={handleFieldChange}
+                            ></lightning-input>
+                        </div>
+
+                        <div class="username-card">
+                            <span class="username-label">Username preview</span>
+                            <p class="username-value" aria-live="polite">
+                                <span class={previewLocalClass}>{previewLocal}</span><span lwc:if={hasUsernameSuffix} class="preview-suffix">{usernameSuffixValue}</span>
+                            </p>
+                            <p class="username-hint">The email address plus the configured suffix becomes the username.</p>
+                        </div>
+                    </section>
+                </template>
+
+                <!-- Step 3: extras -->
+                <template lwc:if={isStep3}>
+                    <section class={panelClass}>
+                        <h2 class="panel-title" tabindex="-1" data-focus-target>Optional extras</h2>
+                        <p class="panel-sub">Adjust the manager and group memberships, or skip straight to the review.</p>
+
+                        <div class="card">
+                            <h3 class="card-title">Manager</h3>
+                            <lightning-input
+                                type="email"
+                                name="managerEmail"
+                                label="Manager email (optional)"
+                                value={managerEmail}
+                                max-length="128"
+                                autocomplete="off"
+                                message-when-type-mismatch="Enter a valid email address."
+                                onchange={handleManagerChange}
+                                onblur={handleManagerBlur}
+                            ></lightning-input>
+                            <div class="manager-status" aria-live="polite">
+                                <template lwc:if={isManagerLoading}>
+                                    <p class="inline-status"><span class="mini-spinner" aria-hidden="true"></span>Looking up manager...</p>
+                                </template>
+                                <template lwc:elseif={isManagerFound}>
+                                    <div class="person person-compact person-found">
+                                        <span class="avatar-wrap" aria-hidden="true">
+                                            <lightning-avatar
+                                                src={managerView.smallPhotoUrl}
+                                                initials={managerView.initials}
+                                                fallback-icon-name="standard:user"
+                                                alternative-text=""
+                                                variant="circle"
+                                                size="small"
+                                            ></lightning-avatar>
+                                        </span>
+                                        <div class="person-main">
+                                            <p class="person-name">{managerView.name}</p>
+                                            <p class="person-sub">{managerView.metaLine}</p>
+                                        </div>
+                                        <span class="badge badge-success">Found</span>
+                                    </div>
+                                </template>
+                                <template lwc:elseif={isManagerNotFound}>
+                                    <div class="notice notice-warning">
+                                        <span class="notice-icon" aria-hidden="true">
+                                            <lightning-icon icon-name="utility:warning" alternative-text="" size="x-small"></lightning-icon>
+                                        </span>
+                                        <p class="notice-text">No active user found with that email. Check the address, or clear it to use the clone user's manager.</p>
+                                    </div>
+                                </template>
+                                <template lwc:elseif={isManagerError}>
+                                    <div class="notice notice-error" role="alert">
+                                        <span class="notice-icon" aria-hidden="true">
+                                            <lightning-icon icon-name="utility:error" alternative-text="" size="x-small"></lightning-icon>
+                                        </span>
+                                        <div class="notice-body">
+                                            <p class="notice-text">{managerError}</p>
+                                            <button type="button" class="link-btn" onclick={handleManagerBlur}>Try again</button>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <p class="hint">{managerHint}</p>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-head">
+                                <h3 class="card-title">Groups &amp; queues</h3>
+                                <span class="count-pill">{selectedGroupCount}</span>
+                            </div>
+                            <p lwc:if={groupsPrefilled} class="hint">Pre-selected from {cloneUser.name}. Remove any you do not want.</p>
+
+                            <template lwc:if={hasSelectedGroups}>
+                                <ul class="pill-list">
+                                    <template for:each={selectedGroupItems} for:item="group">
+                                        <li key={group.id}>
+                                            <lightning-pill name={group.id} label={group.label} onremove={handleRemoveGroup}>
+                                                <lightning-icon icon-name={group.iconName} alternative-text={group.typeLabel} size="small"></lightning-icon>
+                                            </lightning-pill>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template lwc:else>
+                                <p class="hint">No groups or queues selected.</p>
+                            </template>
+
+                            <div class="group-picker">
+                                <lightning-input
+                                    type="search"
+                                    name="groupFilter"
+                                    label="Find groups and queues to add"
+                                    placeholder="Filter groups and queues"
+                                    value={groupFilter}
+                                    disabled={isLoadingGroups}
+                                    onchange={handleGroupFilter}
+                                ></lightning-input>
+
+                                <template lwc:if={isLoadingGroups}>
+                                    <div class="skeleton-list" aria-busy="true">
+                                        <div class="skeleton sk-row"></div>
+                                        <div class="skeleton sk-row"></div>
+                                        <div class="skeleton sk-row"></div>
+                                    </div>
+                                </template>
+                                <template lwc:elseif={groupsError}>
+                                    <div class="notice notice-error" role="alert">
+                                        <span class="notice-icon" aria-hidden="true">
+                                            <lightning-icon icon-name="utility:error" alternative-text="" size="x-small"></lightning-icon>
+                                        </span>
+                                        <div class="notice-body">
+                                            <p class="notice-title">Could not load groups and queues</p>
+                                            <p class="notice-text">{groupsError}</p>
+                                            <button type="button" class="link-btn" onclick={handleRetryGroups}>Try again</button>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:elseif={hasAvailableGroups}>
+                                    <p class="hint">{groupMatchSummary}</p>
+                                    <ul class="group-list">
+                                        <template for:each={availableGroupItems} for:item="group">
+                                            <li key={group.id}>
+                                                <button type="button" class="group-row" data-id={group.id} aria-label={group.addLabel} onclick={handleAddGroup}>
+                                                    <span class="group-name">{group.label}</span>
+                                                    <span class={group.badgeClass}>{group.typeLabel}</span>
+                                                    <span class="group-add" aria-hidden="true">
+                                                        <lightning-icon icon-name="utility:add" alternative-text="" size="xx-small"></lightning-icon>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
+                                <template lwc:elseif={showGroupEmpty}>
+                                    <p class="hint">{groupEmptyMessage}</p>
+                                </template>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                <!-- Step 4: review -->
+                <template lwc:if={isStep4}>
+                    <section class={panelClass}>
+                        <h2 class="panel-title" tabindex="-1" data-focus-target>Review and create</h2>
+                        <p class="panel-sub">Double-check the details. Nothing is created until you press Create user.</p>
+
+                        <div lwc:if={createError} class="notice notice-error" role="alert">
+                            <span class="notice-icon" aria-hidden="true">
+                                <lightning-icon icon-name="utility:error" alternative-text="" size="x-small"></lightning-icon>
+                            </span>
+                            <div class="notice-body">
+                                <p class="notice-title">The user was not created</p>
+                                <p class="notice-text">{createError}</p>
+                            </div>
+                        </div>
+
+                        <div class="card review-card">
+                            <div class="card-head">
+                                <h3 class="card-title">Cloning from</h3>
+                                <button type="button" class="link-btn" data-step="1" onclick={handleEditStep}>Edit<span class="sr-only"> clone user</span></button>
+                            </div>
+                            <div class="person person-compact">
+                                <span class="avatar-wrap" aria-hidden="true">
+                                    <lightning-avatar
+                                        src={cloneUser.smallPhotoUrl}
+                                        initials={cloneUser.initials}
+                                        fallback-icon-name="standard:user"
+                                        alternative-text=""
+                                        variant="circle"
+                                        size="small"
+                                    ></lightning-avatar>
+                                </span>
+                                <div class="person-main">
+                                    <p class="person-name">{cloneUser.name}</p>
+                                    <p class="person-sub">{cloneUser.metaLine}</p>
+                                </div>
+                            </div>
+                            <ul class="stat-grid stat-grid-compact">
+                                <template for:each={cloneDetails.stats} for:item="stat">
+                                    <li key={stat.key} class="stat">
+                                        <span class="stat-value">{stat.value}</span>
+                                        <span class="stat-label">{stat.label}</span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+
+                        <div class="card review-card">
+                            <div class="card-head">
+                                <h3 class="card-title">New user</h3>
+                                <button type="button" class="link-btn" data-step="2" onclick={handleEditStep}>Edit<span class="sr-only"> new user details</span></button>
+                            </div>
+                            <div class="person person-compact">
+                                <span class="initials-chip" aria-hidden="true">{newUserInitials}</span>
+                                <div class="person-main">
+                                    <p class="person-name">{fullName}</p>
+                                    <p class="person-sub">{email}</p>
+                                </div>
+                            </div>
+                            <p class="username-value username-value-compact">
+                                <span class="preview-local">{normalizedEmail}</span><span lwc:if={hasUsernameSuffix} class="preview-suffix">{usernameSuffixValue}</span>
+                            </p>
+                        </div>
+
+                        <div class="card review-card">
+                            <div class="card-head">
+                                <h3 class="card-title">Manager</h3>
+                                <button type="button" class="link-btn" data-step="3" onclick={handleEditStep}>Edit<span class="sr-only"> manager and groups</span></button>
+                            </div>
+                            <p class="review-line">{reviewManagerName}</p>
+                            <p lwc:if={reviewManagerNote} class="hint">{reviewManagerNote}</p>
+                        </div>
+
+                        <div class="card review-card">
+                            <div class="card-head">
+                                <h3 class="card-title">Groups &amp; queues</h3>
+                                <span class="count-pill">{selectedGroupCount}</span>
+                            </div>
+                            <template lwc:if={hasSelectedGroups}>
+                                <ul class="chip-list">
+                                    <template for:each={selectedGroupItems} for:item="group">
+                                        <li key={group.id} class="chip chip-typed">
+                                            <span>{group.label}</span>
+                                            <span class={group.badgeClass}>{group.typeLabel}</span>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template lwc:else>
+                                <p class="hint">No groups or queues will be added.</p>
+                            </template>
+                        </div>
+
+                        <p class="muted-note">{welcomeEmailNote}</p>
+                    </section>
+                </template>
+            </div>
+
+            <!-- Sticky footer. Uniquely named: Salesforce's global styles can reach generic names like footer in the utility bar. -->
+            <div class="onb-footer" role="group" aria-label="Wizard navigation">
+                <button type="button" class="btn btn-ghost" onclick={handleBack} disabled={isCreating} lwc:if={showBack}>Back</button>
+                <span lwc:else class="onb-footer-spacer"></span>
+                <span class="onb-footer-counter" aria-hidden="true">{stepCounter}</span>
+                <button type="button" class={primaryButtonClass} disabled={nextDisabled} aria-busy={ariaBusyValue} onclick={handleNext}>
+                    <span lwc:if={isCreating} class="btn-spinner" aria-hidden="true"></span>
+                    <span class="btn-label">{nextLabel}</span>
+                </button>
+            </div>
+        </template>
+    </div>
+</template>

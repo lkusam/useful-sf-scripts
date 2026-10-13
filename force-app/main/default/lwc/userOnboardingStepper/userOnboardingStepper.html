@@ -1,0 +1,27 @@
+<template>
+    <ol class="steps" aria-label="Onboarding progress">
+        <template for:each={items} for:item="item">
+            <li key={item.value} class={item.itemClass} aria-current={item.ariaCurrent}>
+                <button
+                    type="button"
+                    class="dot"
+                    data-step={item.value}
+                    disabled={item.isLocked}
+                    aria-label={item.ariaLabel}
+                    onclick={handleClick}
+                >
+                    <template lwc:if={item.isDone}>
+                        <svg class="dot-check" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </template>
+                    <template lwc:else>
+                        <span class="dot-num" aria-hidden="true">{item.value}</span>
+                    </template>
+                </button>
+                <span class="step-label" aria-hidden="true">{item.label}</span>
+                <span lwc:if={item.hasLine} class="line" aria-hidden="true"><span class="line-fill"></span></span>
+            </li>
+        </template>
+    </ol>
+</template>
