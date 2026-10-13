@@ -22,6 +22,7 @@ If an individual permission, group or email fails, the user is still created. Ea
 | [Admin guide](admin-guide.md) | Salesforce admins | Who can use it, username suffixes, onboarding emails, the utility bar |
 | [User guide](user-guide.md) | People onboarding users | Walking through the wizard step by step |
 | [Troubleshooting](troubleshooting.md) | Everyone | Common errors and fixes |
+| [Security review notes](security-review.md) | Maintainers | Code Analyzer results and justifications for AppExchange |
 
 ## How it fits together
 

@@ -337,6 +337,7 @@ export default class UserOnboarding extends NavigationMixin(LightningElement) {
             return;
         }
         this.isSearching = true;
+        // Debounce: search only once typing pauses, instead of calling Apex on every keystroke.
         this.searchTimer = window.setTimeout(() => this.runSearch(term), SEARCH_DEBOUNCE_MS);
     }
 

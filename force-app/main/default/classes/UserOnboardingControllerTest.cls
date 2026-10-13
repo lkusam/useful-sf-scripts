@@ -431,6 +431,7 @@ private class UserOnboardingControllerTest {
 
             assertCreateFails(null, 'request is empty');
         }
+        Assert.areEqual(0, [SELECT COUNT() FROM User WHERE Email = :NEW_EMAIL], 'Invalid requests must not create a user');
     }
 
     @IsTest
@@ -525,7 +526,7 @@ private class UserOnboardingControllerTest {
             EmailEncodingKey = 'UTF-8',
             LanguageLocaleKey = 'en_US'
         );
-        for (Schema.SObjectField field : User.SObjectType.getDescribe().fields.getMap().values()) {
+        for (Schema.SObjectField field : User.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().values()) {
             Schema.DescribeFieldResult describe = field.getDescribe();
             if (describe.getName().startsWith('UserPermissions')
                     && describe.getType() == Schema.DisplayType.BOOLEAN
