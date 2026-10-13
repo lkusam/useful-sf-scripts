@@ -4,8 +4,8 @@
       "path": "force-app",
       "default": true,
       "package": "User Onboarding",
-      "versionName": "Version 1.0",
-      "versionNumber": "1.0.0.NEXT",
+      "versionName": "Version 1.0.1",
+      "versionNumber": "1.0.1.NEXT",
       "versionDescription": "Utility bar wizard that onboards a new Salesforce user by cloning an existing one."
     }
   ],
