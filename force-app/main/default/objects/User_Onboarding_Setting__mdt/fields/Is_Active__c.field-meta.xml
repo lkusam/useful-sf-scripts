@@ -4,7 +4,7 @@
     <defaultValue>true</defaultValue>
     <description>When inactive, the default settings (no suffix, welcome email on) are used.</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>When inactive, the default settings (no suffix, welcome email on) are used.</inlineHelpText>
     <label>Active</label>
     <type>Checkbox</type>

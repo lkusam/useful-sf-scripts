@@ -10,18 +10,18 @@ This uses a simple shell script where you provide the number of seconds it needs
 
 ### How to run it
 
-1. A org is authenticated using the Salesforce CLI.
-2. Download the repo using `Git Clone` or the shell script
-3. Give permission to execute the shell script using `chmod +x script.sh` for **MAC or Linux** for **Windows** using the Powershell `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
-4. You need to have you APEX script that does the DML in the `./apex` folder. Please refer to `test.apex` as sample.
-5. Update the Sheel variables with your prefrences
+1. Authenticate an org with the Salesforce CLI.
+2. Clone the repo.
+3. Make the script executable: `chmod +x scripts/shell/runapexfile.sh` on **Mac or Linux**. On **Windows**, run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell.
+4. Put the Apex script that does the DML in `scripts/apex`. See `scripts/apex/test.apex` for a sample.
+5. Update the variables at the top of `scripts/shell/runapexfile.sh`:
 
-   1. Num of Runs
-   2. Sleep Timer
-   3. Org Alias
-   4. Script Path ( This is relative to folder)
+   1. Number of runs
+   2. Sleep timer
+   3. Org alias
+   4. Script path (relative to the script)
 
-6. Execute the script using the terminal `./runapexfile.sh`
+6. Run it from anywhere: `./scripts/shell/runapexfile.sh`. Logs are written to `scripts/shell/logs/`.
 
 ## User Onboarding utility bar (LWC)
 

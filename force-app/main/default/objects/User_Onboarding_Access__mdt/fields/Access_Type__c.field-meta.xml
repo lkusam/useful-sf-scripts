@@ -3,7 +3,7 @@
     <fullName>Access_Type__c</fullName>
     <description>What Access Value is matched against for the running user.</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Username: exact username. Profile: profile name. Permission Set: permission set API name (assigned directly or via a group).</inlineHelpText>
     <label>Access Type</label>
     <required>true</required>

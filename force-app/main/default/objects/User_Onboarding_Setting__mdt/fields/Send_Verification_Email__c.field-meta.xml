@@ -4,7 +4,7 @@
     <defaultValue>true</defaultValue>
     <description>Email the new user a link to verify their email address.</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Email the new user a link to verify their email address.</inlineHelpText>
     <label>Send Verification Email</label>
     <type>Checkbox</type>

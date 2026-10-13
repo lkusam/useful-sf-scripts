@@ -4,7 +4,7 @@
     <defaultValue>true</defaultValue>
     <description>Send the standard Salesforce welcome email when the user is created. Ignored when Send Password Reset Email is on.</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Send the standard Salesforce welcome email when the user is created. Ignored when Send Password Reset Email is on.</inlineHelpText>
     <label>Send Welcome Email</label>
     <type>Checkbox</type>

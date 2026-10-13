@@ -2,7 +2,11 @@
   "packageDirectories": [
     {
       "path": "force-app",
-      "default": true
+      "default": true,
+      "package": "User Onboarding",
+      "versionName": "Version 1.0",
+      "versionNumber": "1.0.0.NEXT",
+      "versionDescription": "Utility bar wizard that onboards a new user by cloning an existing one."
     }
   ],
   "name": "useful-sf-scripts",

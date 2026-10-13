@@ -3,7 +3,7 @@
     <fullName>Access_Value__c</fullName>
     <description>Username, profile name or permission set API name, depending on Access Type. Matching is case-insensitive.</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Username, profile name or permission set API name, depending on Access Type. Matching is case-insensitive.</inlineHelpText>
     <label>Access Value</label>
     <length>255</length>

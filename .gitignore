@@ -2,3 +2,4 @@
 .sf/
 .DS_Store
 **/lwc/jsconfig.json
+scripts/shell/logs/

@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Paths are relative to this script, so it can be run from any directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 # Create a logs directory if it doesn't exist
-LOG_DIR="./logs"
+LOG_DIR="$SCRIPT_DIR/logs"
 mkdir -p $LOG_DIR
 
 # Get the current timestamp
@@ -14,7 +17,7 @@ LOG_FILE="$LOG_DIR/run_log_$TIMESTAMP.log"
 ORG_ALIAS="your_org_alias"
 
 # Apex script file path
-APEX_SCRIPT_PATH="../apex/test.apex"
+APEX_SCRIPT_PATH="$SCRIPT_DIR/../apex/test.apex"
 
 NUM_RUNS=2
 Run_COUNT=1
