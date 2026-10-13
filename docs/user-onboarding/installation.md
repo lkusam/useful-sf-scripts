@@ -64,10 +64,10 @@ There are three ways to install. Pick based on who is installing:
 
 ### Install the published version
 
-The current release is **1.0.0** (`04tak000000nzojAAA`). No installation password is needed.
+The current release is **1.0.1** (`04tak000000o0JNAAY`). No installation password is needed.
 
-- Production / Developer Edition: <https://login.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA>
-- Sandbox: <https://test.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA>
+- Production / Developer Edition: <https://login.salesforce.com/packaging/installPackage.apexp?p0=04tak000000o0JNAAY>
+- Sandbox: <https://test.salesforce.com/packaging/installPackage.apexp?p0=04tak000000o0JNAAY>
 
 Choose **Install for Admins Only**, then continue with [After installing](#after-installing).
 

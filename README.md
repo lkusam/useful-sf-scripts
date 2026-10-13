@@ -37,20 +37,20 @@ A Lightning utility bar wizard that onboards a new user by cloning an existing o
 
 ### Install
 
-**Free** · never requires payment · unlocked package v1.0.0
+**Free** · never requires payment · unlocked package v1.0.1
 
 <p>
-  <a href="https://login.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA"><img src="docs/images/install-production.svg" alt="Install in Production" width="260" height="48"></a>
+  <a href="https://login.salesforce.com/packaging/installPackage.apexp?p0=04tak000000o0JNAAY"><img src="docs/images/install-production.svg" alt="Install in Production" width="260" height="48"></a>
   &nbsp;
-  <a href="https://test.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA"><img src="docs/images/install-sandbox.svg" alt="Try it in a Sandbox" width="260" height="48"></a>
+  <a href="https://test.salesforce.com/packaging/installPackage.apexp?p0=04tak000000o0JNAAY"><img src="docs/images/install-sandbox.svg" alt="Try it in a Sandbox" width="260" height="48"></a>
 </p>
 
-Click a button, log in to **your** org, and choose **Install for Admins Only**. No password is needed. Package version ID: `04tak000000nzojAAA`.
+Click a button, log in to **your** org, and choose **Install for Admins Only**. No password is needed. Package version ID: `04tak000000o0JNAAY`.
 
 Or use the CLI:
 
 ```bash
-sf package install --package 04tak000000nzojAAA --target-org your_org_alias --wait 20
+sf package install --package 04tak000000o0JNAAY --target-org your_org_alias --wait 20
 ```
 
 Then follow [After installing](docs/user-onboarding/installation.md#after-installing): assign the permission set and add the component to your app's utility bar. To deploy from source instead, see [Installation](docs/user-onboarding/installation.md).
