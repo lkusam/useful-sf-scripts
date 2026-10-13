@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="48" viewBox="0 0 260 48" role="img" aria-label="Install in Production">
+  <title>Install in Production</title>
+  <rect x="0" y="0" width="260" height="48" rx="6" fill="#0176D3"/>
+  <text x="130" y="30.5" text-anchor="middle" fill="#FFFFFF"
+        font-family="'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+        font-size="17" font-weight="700">Install in Production</text>
+</svg>

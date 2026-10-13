@@ -37,12 +37,15 @@ A Lightning utility bar wizard that onboards a new user by cloning an existing o
 
 ### Install
 
-Click a button, log in to **your** org, and choose **Install for Admins Only**. No password is needed.
+**Free** · never requires payment · unlocked package v1.0.0
 
-[![Install in Production](https://img.shields.io/badge/Install%20in-Production-0176d3?style=for-the-badge&logo=salesforce&logoColor=white)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA)
-[![Install in Sandbox](https://img.shields.io/badge/Install%20in-Sandbox-7f56d9?style=for-the-badge&logo=salesforce&logoColor=white)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA)
+<p>
+  <a href="https://login.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA"><img src="docs/images/install-production.svg" alt="Install in Production" width="260" height="48"></a>
+  &nbsp;
+  <a href="https://test.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA"><img src="docs/images/install-sandbox.svg" alt="Try it in a Sandbox" width="260" height="48"></a>
+</p>
 
-Version 1.0.0 · package version ID `04tak000000nzojAAA`
+Click a button, log in to **your** org, and choose **Install for Admins Only**. No password is needed. Package version ID: `04tak000000nzojAAA`.
 
 Or use the CLI:
 
