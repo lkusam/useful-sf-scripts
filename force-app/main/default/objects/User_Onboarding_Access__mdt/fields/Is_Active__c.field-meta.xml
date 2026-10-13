@@ -4,7 +4,7 @@
     <defaultValue>true</defaultValue>
     <description>Only active rules are evaluated.</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Only active rules are evaluated.</inlineHelpText>
     <label>Active</label>
     <type>Checkbox</type>

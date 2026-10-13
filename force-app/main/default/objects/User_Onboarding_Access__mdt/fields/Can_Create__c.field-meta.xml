@@ -4,7 +4,7 @@
     <defaultValue>true</defaultValue>
     <description>Lets matching users open the onboarding tool and create new users.</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Lets matching users open the onboarding tool and create new users.</inlineHelpText>
     <label>Can Create</label>
     <type>Checkbox</type>

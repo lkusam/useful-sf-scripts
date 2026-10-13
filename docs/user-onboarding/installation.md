@@ -62,7 +62,34 @@ There are three ways to install. Pick based on who is installing:
 
 ## B. Unlocked package
 
-You build a package version once; anyone can then install it from a link.
+### Install the published version
+
+The current release is **1.0.0** (`04tak000000nzojAAA`). No installation password is needed.
+
+- Production / Developer Edition: <https://login.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA>
+- Sandbox: <https://test.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA>
+
+Choose **Install for Admins Only**, then continue with [After installing](#after-installing).
+
+### Publish a new version (maintainers)
+
+The package is already registered (`User Onboarding`, `0Hoak0000006n4TCAQ` in `sfdx-project.json`). For a new release, bump `versionNumber` in `sfdx-project.json` if needed, then build, check and promote:
+
+```bash
+sf package version create --package "User Onboarding" --installation-key-bypass --code-coverage --wait 60 --target-dev-hub dev
+```
+
+```bash
+sf package version report --package <new 04t id> --target-dev-hub dev
+```
+
+```bash
+sf package version promote --package <new 04t id> --target-dev-hub dev
+```
+
+Then update the `04t` ID in the root README buttons and in this section. Orgs on an older version upgrade by installing the new link.
+
+The steps below describe how the package was first set up, for reference.
 
 ### Build it (once per version)
 
