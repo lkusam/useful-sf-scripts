@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Username_Suffix__c</fullName>
+    <description>Appended to the new user's email to build the username, e.g. .uat gives jane@acme.com.uat. Leave blank to use the email as-is.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Appended to the new user's email to build the username, e.g. .uat gives jane@acme.com.uat. Leave blank to use the email as-is.</inlineHelpText>
+    <label>Username Suffix</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

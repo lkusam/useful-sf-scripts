@@ -1,1 +1,4 @@
 .sfdx/
+.sf/
+.DS_Store
+**/lwc/jsconfig.json
