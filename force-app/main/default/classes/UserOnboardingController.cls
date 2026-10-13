@@ -246,8 +246,8 @@ public with sharing class UserOnboardingController {
                 source.userLicensesAvailable = available(licence);
             }
             source.exhaustedPermissionSetLicenses = exhaustedPermissionSetLicenses(source.permissionSetLicenses);
-            if (users[0].ManagerId != null) {
-                Id managerId = users[0].ManagerId;
+            Id managerId = users[0].ManagerId;
+            if (managerId != null) {
                 for (User manager : [
                     SELECT Id, Name, Username, Email, Title, Profile.Name, UserRole.Name, SmallPhotoUrl
                     FROM User
@@ -343,7 +343,7 @@ public with sharing class UserOnboardingController {
             OnboardingResult result = new OnboardingResult();
             result.userId = newUser.Id;
             result.username = username;
-            result.name = newUser.FirstName + ' ' + newUser.LastName;
+            result.name = String.join(new List<String>{ newUser.FirstName, newUser.LastName }, ' ');
             result.managerName = managerName;
             assignAccess(newUser.Id, request.cloneUserId, request.groupIds, result);
             sendOnboardingEmails(newUser.Id, access, result);
@@ -400,8 +400,12 @@ public with sharing class UserOnboardingController {
     /** Required platform permissions the running user lacks (UserPermissionAccess reflects only the running user). */
     private static List<String> missingPlatformPermissions() {
         List<String> missing = new List<String>();
-        String soql = 'SELECT ' + String.join(new List<String>(REQUIRED_PERMISSIONS.keySet()), ', ') + ' FROM UserPermissionAccess LIMIT 1';
-        List<SObject> rows = Database.query(soql, AccessLevel.SYSTEM_MODE);
+        List<UserPermissionAccess> rows = [
+            SELECT PermissionsViewSetup, PermissionsManageUsers, PermissionsAssignPermissionSets
+            FROM UserPermissionAccess
+            WITH SYSTEM_MODE
+            LIMIT 1
+        ];
         for (String field : REQUIRED_PERMISSIONS.keySet()) {
             if (rows.isEmpty() || rows[0].get(field) != true || missingPermissionOverride.contains(field)) {
                 missing.add(REQUIRED_PERMISSIONS.get(field));
@@ -613,7 +617,7 @@ public with sharing class UserOnboardingController {
         if (copyableFieldCache != null) {
             return copyableFieldCache;
         }
-        Map<String, Schema.SObjectField> fieldMap = User.SObjectType.getDescribe().fields.getMap();
+        Map<String, Schema.SObjectField> fieldMap = User.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap();
         copyableFieldCache = new List<String>();
         for (String fieldName : CLONED_FIELDS) {
             Schema.SObjectField field = fieldMap.get(fieldName.toLowerCase());
