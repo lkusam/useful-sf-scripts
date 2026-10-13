@@ -35,8 +35,19 @@ A Lightning utility bar wizard that onboards a new user by cloning an existing o
 | [User guide](docs/user-onboarding/user-guide.md) | Using the wizard step by step |
 | [Troubleshooting](docs/user-onboarding/troubleshooting.md) | Common errors and fixes |
 
-Quick start for a sandbox or dev org. For production and validate-first steps, see [Installation](docs/user-onboarding/installation.md):
+### Install
+
+Click a button, log in to **your** org, and choose **Install for Admins Only**. No password is needed.
+
+[![Install in Production](https://img.shields.io/badge/Install%20in-Production-0176d3?style=for-the-badge&logo=salesforce&logoColor=white)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA)
+[![Install in Sandbox](https://img.shields.io/badge/Install%20in-Sandbox-7f56d9?style=for-the-badge&logo=salesforce&logoColor=white)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tak000000nzojAAA)
+
+Version 1.0.0 · package version ID `04tak000000nzojAAA`
+
+Or use the CLI:
 
 ```bash
-sf project deploy start --source-dir force-app --target-org your_org_alias
+sf package install --package 04tak000000nzojAAA --target-org your_org_alias --wait 20
 ```
+
+Then follow [After installing](docs/user-onboarding/installation.md#after-installing): assign the permission set and add the component to your app's utility bar. To deploy from source instead, see [Installation](docs/user-onboarding/installation.md).

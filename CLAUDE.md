@@ -26,6 +26,16 @@ sf project deploy quick --job-id <id> --target-org dev
 sf apex run test --tests UserOnboardingControllerTest.createUserClonesProfileRoleManagerAndAccess --target-org dev --result-format human --synchronous
 ```
 
+## Releasing the package
+
+`force-app` is the unlocked package **User Onboarding** (no namespace, no installation key), owned by the `dev` Dev Hub; its IDs are in `sfdx-project.json` → `packageAliases`.
+
+1. Build with `sf package version create --package "User Onboarding" --installation-key-bypass --code-coverage --wait 60 --target-dev-hub dev`.
+2. Promote the new `04t…` ID with `sf package version promote`.
+3. Update the `04t` ID in the README install buttons and in `docs/user-onboarding/installation.md`.
+
+`sf package create` rewrites the package directory entry in `sfdx-project.json` (version, `default`), so check it afterwards.
+
 ## User Onboarding architecture
 
 Docs for users and admins live in `docs/user-onboarding/`. The parts that span several files:

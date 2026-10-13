@@ -6,11 +6,15 @@
       "package": "User Onboarding",
       "versionName": "Version 1.0",
       "versionNumber": "1.0.0.NEXT",
-      "versionDescription": "Utility bar wizard that onboards a new user by cloning an existing one."
+      "versionDescription": "Utility bar wizard that onboards a new Salesforce user by cloning an existing one."
     }
   ],
   "name": "useful-sf-scripts",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "64.0"
+  "sourceApiVersion": "64.0",
+  "packageAliases": {
+    "User Onboarding": "0Hoak0000006n4TCAQ",
+    "User Onboarding@1.0.0-1": "04tak000000nzojAAA"
+  }
 }
